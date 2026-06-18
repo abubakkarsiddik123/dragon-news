@@ -1,7 +1,9 @@
 "use client";
+import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginPage = () => {
   const {
@@ -9,8 +11,23 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const handleLoginFunc = (data) => {
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const handleLoginFunc = async (data) => {
     console.log(data, "data");
+
+    const { data: res, error } = await authClient.signIn.email({
+      email: data.email, // required
+      password: data.password, // required
+      rememberMe: true,
+      callbackURL: "/",
+    });
+    console.log(res, error);
+    if (error) {
+      alert(error.message);
+    }
+    if (res) {
+      alert("Login Successfull");
+    }
   };
   return (
     <div className="container mx-auto min-h-[80vh] flex justify-center items-center bg-slate-100">
@@ -27,17 +44,32 @@ const LoginPage = () => {
               className="input"
               placeholder="Enter Your Email"
             />
-            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
           </fieldset>
-          <fieldset className="fieldset">
+          <fieldset className="fieldset relative">
             <legend className="fieldset-legend">Password</legend>
             <input
-              type="password"
+              type={isShowPassword ? "text" : "password"}
               {...register("password", { required: "Password is required" })}
               className="input"
               placeholder="Enter Your Password"
-              />
-              {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+            />
+            <span
+              className="absolute right-2 top-4"
+              onClick={() => setIsShowPassword(!isShowPassword)}
+            >
+              {" "}
+              {isShowPassword ? (
+                <FaEye className="text-lg" />
+              ) : (
+                <FaEyeSlash className="text-lg" />
+              )}{" "}
+            </span>
+            {errors.password && (
+              <p className="text-red-500">{errors.password.message}</p>
+            )}
           </fieldset>
           <button className="btn w-full bg-slate-700 text-white">Login</button>
         </form>
