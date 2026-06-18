@@ -24,3 +24,4 @@ const LeftSideBar = ({ categories,activeId }) => {
 };
 
 export default LeftSideBar;
+

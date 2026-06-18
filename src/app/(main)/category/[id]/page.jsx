@@ -1,36 +1,45 @@
+
 import LeftSideBar from "@/components/homepage/news/LeftSideBar";
 import NewsCard from "@/components/homepage/news/NewsCard";
 import RightSideBar from "@/components/homepage/news/RightSideBar";
 import { getCategories, getNewsByCategoryId } from "@/lib/data";
-import React from "react";
 
 const NewsCategory = async ({ params }) => {
   const { id } = await params;
   const categories = await getCategories();
   const news = await getNewsByCategoryId(id);
-  console.log(news, "news");
 
   return (
-    <div className="grid grid-cols-12 gap-4 container mx-auto my-[60px]">
-      <div className="col-span-3">
-        <LeftSideBar categories={categories} activeId={id} />
-      </div>
-      <div className="col-span-6">
-        <h2 className="font-bold text-lg">Dragon News Home</h2>
-        <div className="space-y-4 mt-6">
-          {news.length > 0 ? (
-            news.map((n) => {
-              return <NewsCard key={n._id} news={n}></NewsCard>;
-            })
-          ) : (
-            <h2 className="font-bold text-4xl my-7 text-center">
-              No News Found
-            </h2>
-          )}
+    <div className="container mx-auto px-4 my-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Sidebar */}
+        <div className="lg:col-span-3">
+          <LeftSideBar categories={categories} activeId={id} />
         </div>
-      </div>
-      <div className=" col-span-3">
-        <RightSideBar />
+
+        {/* Main Content */}
+        <div className="lg:col-span-6">
+          <h2 className="font-bold text-lg mb-6">
+            Dragon News Home
+          </h2>
+
+          <div className="space-y-4">
+            {news.length > 0 ? (
+              news.map((n) => (
+                <NewsCard key={n._id} news={n} />
+              ))
+            ) : (
+              <h2 className="font-bold text-2xl md:text-4xl text-center my-7">
+                No News Found
+              </h2>
+            )}
+          </div>
+        </div>
+
+        {/* Right Sidebar */}
+        <div className="lg:col-span-3">
+          <RightSideBar />
+        </div>
       </div>
     </div>
   );
